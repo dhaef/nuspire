@@ -21,9 +21,19 @@ const SignUp = ({ setLoggedIn, setShowSignUp }) => {
     const handleSubmit = e => {
         e.preventDefault()
         userPool.signUp(form.email, form.password, [], null, (err, data) => {
-            if (err) return err
+            if (err) {
+                alert(`
+                    Password must contain
+                        -uppercase letter
+                        -lowercase letter
+                        -number
+                        -special character
+                `)
+                return
+            }
             setLoggedIn(true)
-            sessionStorage.setItem('loggedIn', 'true');
+            setShowSignUp(false)
+            sessionStorage.setItem('loggedIn', 'true')
             setForm({
                 email: '',
                 password: ''

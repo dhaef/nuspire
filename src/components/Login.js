@@ -59,6 +59,7 @@ const Login = ({ setLoggedIn, setShowLogin }) => {
                         console.log('Successfully logged!');
                         sessionStorage.setItem('loggedIn', 'true');
                         setLoggedIn(true)
+                        setShowLogin(false)
                     }
                 });
             },
