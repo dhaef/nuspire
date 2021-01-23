@@ -7,6 +7,10 @@ import styled from 'styled-components'
 import SignUp from './SignUp'
 import Login from './Login'
 
+const H2 = styled.h2`
+    margin-top: .5rem;
+`
+
 const Conatiner = styled.div`
     width: 200px;
     margin: auto;
@@ -20,8 +24,13 @@ const CardContainer = styled.div`
 
 const Card = styled.div`
     border: 1px solid black;
-    padding: 1rem;
+    padding: .5rem;
     border-radius: 5px;
+    margin-top: .5rem;
+    text-align: center;
+`
+
+const P = styled.p`
     margin-top: .5rem;
     text-align: center;
 `
@@ -66,24 +75,30 @@ const Main = () => {
         })
     }
 
+    const handleLogout = () => {
+        sessionStorage.removeItem('loggedIn')
+        setLoggedIn(false)
+    }
+
     return (
         <Conatiner>
-            <h2>Nuspire Challenge</h2>
+            <H2>Nuspire Challenge</H2>
             {!loggedIn ? <>
                 {showSignUp ? <SignUp setLoggedIn={setLoggedIn} setShowSignUp={setShowSignUp} /> : <Button text="Sign Up" onClick={() => setShowSignUp(true)} />}
                 {showLogin ? <Login setLoggedIn={setLoggedIn} setShowLogin={setShowLogin} /> : <Button text="Login" onClick={() => setShowLogin(true)} />}
             </> : <>
+                    <Button text="Logout" onClick={handleLogout} />
                     {showAddUser
                         ? <NewUser setUsers={setUsers} users={users} setShowAddUser={setShowAddUser} />
                         : <Button text="Add New User" onClick={() => setShowAddUser(true)} />}
                 </>}
             {edit.show && <EditUser user={edit} setEdit={setEdit} setUsers={setUsers} users={users} />}
-            <p>User Count: {users.length}</p>
+            <P>User Count: {users.length}</P>
             <CardContainer>
                 {users && users.map(user => {
                     return <Card key={user.id}>
-                        <p>First-name: {user.firstName}</p>
-                        <p>Location: {user.stateOfResidence}</p>
+                        <P>First-name: {user.firstName}</P>
+                        <P>Location: {user.stateOfResidence}</P>
                         {loggedIn && <>
                             <Button onClick={() => handleUpdate(user.id, user.firstName, user.stateOfResidence)} id={user.id} text="Update" />
                             <Button onClick={handleDelete} id={user.id} text="Delete" />
