@@ -9,6 +9,7 @@ import Login from './Login'
 
 const H2 = styled.h2`
     margin-top: .5rem;
+    text-align: center;
 `
 
 const Conatiner = styled.div`
@@ -47,11 +48,14 @@ const Main = () => {
     const [loggedIn, setLoggedIn] = useState(sessionStorage.getItem('loggedIn'))
     const [showSignUp, setShowSignUp] = useState(false)
     const [showLogin, setShowLogin] = useState(false)
+    const [loading, setLoading] = useState(false);
 
     // get users from DB and set state
     const getUsers = async () => {
+        setLoading(true)
         const res = await callQuery('getUsers')
         setUsers(res.data.getUsers)
+        setLoading(false)
     }
 
     useEffect(() => {
@@ -75,37 +79,58 @@ const Main = () => {
         })
     }
 
+    // handle logout by removing session and setting state
     const handleLogout = () => {
         sessionStorage.removeItem('loggedIn')
         setLoggedIn(false)
+    }
+
+    // handle displaying show login form and hide sign up if open
+    const handleShowLogin = () => {
+        setShowLogin(true)
+        setShowSignUp(false)
+    }
+
+    // handle displaying show sign up form and hide login if open
+    const handleShowSignUp = () => {
+        setShowLogin(false)
+        setShowSignUp(true)
     }
 
     return (
         <Conatiner>
             <H2>Nuspire Challenge</H2>
             {!loggedIn ? <>
-                {showSignUp ? <SignUp setLoggedIn={setLoggedIn} setShowSignUp={setShowSignUp} /> : <Button text="Sign Up" onClick={() => setShowSignUp(true)} />}
-                {showLogin ? <Login setLoggedIn={setLoggedIn} setShowLogin={setShowLogin} /> : <Button text="Login" onClick={() => setShowLogin(true)} />}
+                <div className='center-div'>
+                    {!showSignUp && <Button text="Sign Up" onClick={handleShowSignUp} />}
+                    {!showLogin && <Button text="Login" onClick={handleShowLogin} />}
+                </div>
+                {showSignUp && <SignUp setLoggedIn={setLoggedIn} setShowSignUp={setShowSignUp} />}
+                {showLogin && <Login setLoggedIn={setLoggedIn} setShowLogin={setShowLogin} />}
             </> : <>
-                    <Button text="Logout" onClick={handleLogout} />
-                    {showAddUser
-                        ? <NewUser setUsers={setUsers} users={users} setShowAddUser={setShowAddUser} />
-                        : <Button text="Add New User" onClick={() => setShowAddUser(true)} />}
+                    <div className='center-div'>
+                        <Button text="Logout" onClick={handleLogout} />
+                        {!showAddUser && <Button text="Add New User" onClick={() => setShowAddUser(true)} />}
+                    </div>
+                    {showAddUser && <NewUser setUsers={setUsers} users={users} setShowAddUser={setShowAddUser} />}
                 </>}
             {edit.show && <EditUser user={edit} setEdit={setEdit} setUsers={setUsers} users={users} />}
-            <P>User Count: {users.length}</P>
-            <CardContainer>
-                {users && users.map(user => {
-                    return <Card key={user.id}>
-                        <P>First-name: {user.firstName}</P>
-                        <P>Location: {user.stateOfResidence}</P>
-                        {loggedIn && <>
-                            <Button onClick={() => handleUpdate(user.id, user.firstName, user.stateOfResidence)} id={user.id} text="Update" />
-                            <Button onClick={handleDelete} id={user.id} text="Delete" />
-                        </>}
-                    </Card>
-                })}
-            </CardContainer>
+            {loading ? <P>Loading...</P>
+                : <>
+                    <P>User Count: {users.length}</P>
+                    <CardContainer>
+                        {users && users.map(user => {
+                            return <Card key={user.id}>
+                                <P className='capitalize'><strong>First-name:</strong> {user.firstName}</P>
+                                <P><strong>Location:</strong> {user.stateOfResidence}</P>
+                                {loggedIn && <>
+                                    <Button onClick={() => handleUpdate(user.id, user.firstName, user.stateOfResidence)} id={user.id} text="Update" />
+                                    <Button onClick={handleDelete} id={user.id} text="Delete" />
+                                </>}
+                            </Card>
+                        })}
+                    </CardContainer>
+                </>}
         </Conatiner>
     )
 }

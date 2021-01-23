@@ -2,6 +2,10 @@ import React, { useState } from 'react'
 import { CognitoUserPool } from 'amazon-cognito-identity-js'
 import Input from './Input'
 import Button from './Button'
+import {
+    UserPoolId,
+    ClientId
+} from '../utils/amplify'
 
 const SignUp = ({ setLoggedIn, setShowSignUp }) => {
     const [form, setForm] = useState({
@@ -10,8 +14,8 @@ const SignUp = ({ setLoggedIn, setShowSignUp }) => {
     })
 
     const poolData = {
-        UserPoolId: 'us-east-2_xi7hLKpHp',
-        ClientId: '3oipmen0d58bnok6fm5igprqov'
+        UserPoolId,
+        ClientId
     }
 
     const userPool = new CognitoUserPool(poolData)
@@ -44,19 +48,21 @@ const SignUp = ({ setLoggedIn, setShowSignUp }) => {
     return (
         <form onSubmit={handleSubmit}>
             <Input
-                placeholder='email'
+                placeholder='Email'
                 onChange={handleChange}
                 name='email'
                 type='text'
                 value={form.email} />
             <Input
-                placeholder='password'
+                placeholder='Password'
                 onChange={handleChange}
                 name='password'
                 type='password'
                 value={form.password} />
-            <Button text='Sign Up' type='submit' />
-            <Button text='Cancel' onClick={() => setShowSignUp(false)} />
+            <div className='center-div'>
+                <Button text='Sign Up' type='submit' />
+                <Button text='Cancel' onClick={() => setShowSignUp(false)} />
+            </div>
         </form>
     )
 }

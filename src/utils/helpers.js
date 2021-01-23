@@ -50,8 +50,10 @@ const getQueryObj = (type, variables) => {
 }
 
 export const callQuery = async (type, variables) => {
+    // get query to be called
     const queryToCall = getQueryObj(type, variables)
 
+    // call API and return response data
     try {
         const req = await fetch('https://7e5c5nsvczarlh7aguuoe3trgi.appsync-api.us-east-2.amazonaws.com/graphql', {
             method: "POST",

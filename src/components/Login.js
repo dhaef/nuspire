@@ -3,6 +3,12 @@ import { CognitoUserPool, AuthenticationDetails, CognitoUser } from 'amazon-cogn
 import * as AWS from 'aws-sdk/global'
 import Input from './Input'
 import Button from './Button'
+import {
+    UserPoolId,
+    ClientId,
+    region,
+    IdentityPoolId,
+} from '../utils/amplify'
 
 const Login = ({ setLoggedIn, setShowLogin }) => {
     const [form, setForm] = useState({
@@ -11,8 +17,8 @@ const Login = ({ setLoggedIn, setShowLogin }) => {
     })
 
     const poolData = {
-        UserPoolId: 'us-east-2_xi7hLKpHp',
-        ClientId: '3oipmen0d58bnok6fm5igprqov'
+        UserPoolId,
+        ClientId
     }
 
     const userPool = new CognitoUserPool(poolData)
@@ -21,6 +27,7 @@ const Login = ({ setLoggedIn, setShowLogin }) => {
 
     const handleSubmit = e => {
         e.preventDefault()
+
         const authenticationDetails = new AuthenticationDetails({
             Username: form.email,
             Password: form.password
@@ -36,27 +43,21 @@ const Login = ({ setLoggedIn, setShowLogin }) => {
             onSuccess: function (result) {
                 var accessToken = result.getAccessToken().getJwtToken();
 
-                //POTENTIAL: Region needs to be set if not already set previously elsewhere.
-                AWS.config.region = 'eu-west-1';
+                AWS.config.region = region;
 
                 AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-                    IdentityPoolId: 'eu-west-1:a1564b96-eeef-4f38-84e1-33a0d2f50ab6', // your identity pool id here
+                    IdentityPoolId,
                     Logins: {
-                        // Change the key below according to the specific region your user pool is in.
                         'cognito-idp.us-east-2.amazonaws.com/us-east-2_xi7hLKpHp': result
                             .getIdToken()
                             .getJwtToken(),
                     },
                 });
 
-                //refreshes credentials using AWS.CognitoIdentity.getCredentialsForIdentity()
                 AWS.config.credentials.refresh(error => {
                     if (error) {
                         console.error(error);
                     } else {
-                        // Instantiate aws sdk service objects now that the credentials have been updated.
-                        // example: var s3 = new AWS.S3();
-                        console.log('Successfully logged!');
                         sessionStorage.setItem('loggedIn', 'true');
                         setLoggedIn(true)
                         setShowLogin(false)
@@ -73,19 +74,21 @@ const Login = ({ setLoggedIn, setShowLogin }) => {
     return (
         <form onSubmit={handleSubmit}>
             <Input
-                placeholder='email'
+                placeholder='Email'
                 onChange={handleChange}
                 name='email'
                 type='text'
                 value={form.email} />
             <Input
-                placeholder='password'
+                placeholder='Password'
                 onChange={handleChange}
                 name='password'
                 type='password'
                 value={form.password} />
-            <Button text='Login' type='submit' />
-            <Button text='Cancel' onClick={() => setShowLogin(false)} />
+            <div className='center-div'>
+                <Button text='Login' type='submit' />
+                <Button text='Cancel' onClick={() => setShowLogin(false)} />
+            </div>
         </form>
     )
 }

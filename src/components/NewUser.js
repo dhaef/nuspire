@@ -14,15 +14,23 @@ const NewUser = ({ setUsers, users, setShowAddUser }) => {
 
     const handleSubmit = async e => {
         e.preventDefault()
+
+        // generate new id
         const id = uuidv4()
-        await callQuery('create', { id, firstName: form.firstName, stateOfResidence: form.stateOfResidence })
+
+        // send new user to DB
+        await callQuery('create', { id, firstName: form.firstName.toLowerCase(), stateOfResidence: form.stateOfResidence })
+        // add to current state
         setUsers([...users, { ...form, id }])
+        // reset form fields
         setForm({
             firstName: '',
             stateOfResidence: ''
         })
+        setShowAddUser(false)
     }
 
+    // handles cloasing addUser form by reseting form
     const handleCancelAddUser = () => {
         setForm({
             firstName: '',
@@ -45,8 +53,10 @@ const NewUser = ({ setUsers, users, setShowAddUser }) => {
                 name="stateOfResidence"
                 onChange={handleChange}
                 value={form.stateOfResidence} />
-            <Button type="submit" text="Add User" />
-            <Button text="Cancel" onClick={handleCancelAddUser} />
+            <div className='center-div'>
+                <Button type="submit" text="Add User" />
+                <Button text="Cancel" onClick={handleCancelAddUser} />
+            </div>
         </form>
     )
 }
