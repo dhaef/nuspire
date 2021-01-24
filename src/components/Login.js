@@ -10,12 +10,11 @@ import {
     IdentityPoolId,
 } from '../utils/amplify'
 
-const Login = ({ setLoggedIn, setShowLogin }) => {
+const Login = ({ setLoggedIn, setShowLogin, loading, setLoading }) => {
     const [form, setForm] = useState({
         email: '',
         password: ''
     })
-    const [loading, setLoading] = useState(false)
 
     const poolData = {
         UserPoolId,

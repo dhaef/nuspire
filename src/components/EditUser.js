@@ -3,9 +3,8 @@ import Button from './Button'
 import Input from './Input'
 import { callQuery } from '../utils/helpers'
 
-const EditUser = ({ user, setEdit, setUsers, users }) => {
+const EditUser = ({ user, setEdit, setUsers, users, loading, setLoading }) => {
     const [form, setForm] = useState(user)
-    const [loading, setLoading] = useState(false)
 
     const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value })
 

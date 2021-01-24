@@ -105,16 +105,16 @@ const Main = () => {
                     {!showSignUp && <Button text="Sign Up" onClick={handleShowSignUp} />}
                     {!showLogin && <Button text="Login" onClick={handleShowLogin} />}
                 </div>
-                {showSignUp && <SignUp setLoggedIn={setLoggedIn} setShowSignUp={setShowSignUp} />}
-                {showLogin && <Login setLoggedIn={setLoggedIn} setShowLogin={setShowLogin} />}
+                {showSignUp && <SignUp setLoggedIn={setLoggedIn} setShowSignUp={setShowSignUp} loading={loading} setLoading={setLoading} />}
+                {showLogin && <Login setLoggedIn={setLoggedIn} setShowLogin={setShowLogin} loading={loading} setLoading={setLoading} />}
             </> : <>
                     <div className='center-div'>
                         <Button text="Logout" onClick={handleLogout} />
                         {!showAddUser && <Button text="Add New User" onClick={() => setShowAddUser(true)} />}
                     </div>
-                    {showAddUser && <NewUser setUsers={setUsers} users={users} setShowAddUser={setShowAddUser} />}
+                    {showAddUser && <NewUser setUsers={setUsers} users={users} setShowAddUser={setShowAddUser} loading={loading} setLoading={setLoading} />}
                 </>}
-            {edit.show && <EditUser user={edit} setEdit={setEdit} setUsers={setUsers} users={users} />}
+            {edit.show && <EditUser user={edit} setEdit={setEdit} setUsers={setUsers} users={users} loading={loading} setLoading={setLoading} />}
             {loading ? <P>Loading...</P>
                 : <>
                     <P>User Count: {users.length}</P>

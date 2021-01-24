@@ -4,12 +4,11 @@ import Button from './Button'
 import Input from './Input'
 import { callQuery } from '../utils/helpers'
 
-const NewUser = ({ setUsers, users, setShowAddUser }) => {
+const NewUser = ({ setUsers, users, setShowAddUser, loading, setLoading }) => {
     const [form, setForm] = useState({
         firstName: '',
         stateOfResidence: ''
     })
-    const [loading, setLoading] = useState(false)
 
     const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value })
 

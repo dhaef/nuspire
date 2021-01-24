@@ -7,12 +7,11 @@ import {
     ClientId
 } from '../utils/amplify'
 
-const SignUp = ({ setLoggedIn, setShowSignUp }) => {
+const SignUp = ({ setLoggedIn, setShowSignUp, loading, setLoading }) => {
     const [form, setForm] = useState({
         email: '',
         password: ''
     })
-    const [loading, setLoading] = useState(false)
 
     const poolData = {
         UserPoolId,
