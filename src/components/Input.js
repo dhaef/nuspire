@@ -10,7 +10,7 @@ const StyledInput = styled.input`
     width: 190px;
     &:focus {
         outline: none;
-        border: 1px solid lightblue;
+        border: 1px solid #ffba00;
     }
 `
 
