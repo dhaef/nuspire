@@ -13,3 +13,7 @@
     width: -moz-max-content; /* Firefox/Gecko */
     width: -webkit-max-content; /* Chrome */
 }
+
+.disabled {
+    background-color: lightgrey;
+}
