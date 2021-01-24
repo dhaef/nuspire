@@ -15,15 +15,16 @@ const NewUser = ({ setUsers, users, setShowAddUser }) => {
 
     const handleSubmit = async e => {
         e.preventDefault()
-        setLoading(true)
 
         // validate fields
         if (form.firstName === '' || form.stateOfResidence === '') {
             alert('Please fill in all fields')
+        } else if (form.stateOfResidence.length !== 2) {
+            alert('State of residence should be two characters')
         } else {
+            setLoading(true)
             // generate new id
             const id = uuidv4()
-
             // send new user to DB
             await callQuery('create', { id, firstName: form.firstName.toLowerCase(), stateOfResidence: form.stateOfResidence })
             // add to current state
@@ -33,9 +34,10 @@ const NewUser = ({ setUsers, users, setShowAddUser }) => {
                 firstName: '',
                 stateOfResidence: ''
             })
+            setLoading(false)
             setShowAddUser(false)
+
         }
-        setLoading(false)
     }
 
     // handles cloasing addUser form by reseting form
@@ -51,13 +53,13 @@ const NewUser = ({ setUsers, users, setShowAddUser }) => {
         <form onSubmit={handleSubmit}>
             <Input
                 type="text"
-                placeholder="firstName..."
+                placeholder="First Name"
                 name="firstName"
                 onChange={handleChange}
                 value={form.firstName} />
             <Input
                 type="text"
-                placeholder="state of residence..."
+                placeholder="State of residence (ex. MI)"
                 name="stateOfResidence"
                 onChange={handleChange}
                 value={form.stateOfResidence} />

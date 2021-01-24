@@ -11,15 +11,16 @@ const EditUser = ({ user, setEdit, setUsers, users }) => {
 
     const handleSubmit = async e => {
         e.preventDefault()
-        setLoading(true)
 
         // validate form
         if (form.firstName === '' || form.stateOfResidence === '') {
             alert('Please fill in all fields')
+        } else if (form.stateOfResidence.length !== 2) {
+            alert('State of residence should be two characters')
         } else {
+            setLoading(true)
             // Send new update to DB
             await callQuery('update', { userId: form.id, firstName: form.firstName, stateOfResidence: form.stateOfResidence })
-
             // Add update to current state
             setUsers(users.map(user => {
                 if (user.id === form.id) {
@@ -31,7 +32,7 @@ const EditUser = ({ user, setEdit, setUsers, users }) => {
                 }
                 return user
             }))
-
+            setLoading(false)
             // Clear form and edit objects
             const editObj = {
                 id: '',
@@ -42,7 +43,6 @@ const EditUser = ({ user, setEdit, setUsers, users }) => {
             setForm(editObj)
             setEdit(editObj)
         }
-        setLoading(false)
     }
 
     return (
