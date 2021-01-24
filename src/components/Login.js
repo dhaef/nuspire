@@ -15,6 +15,7 @@ const Login = ({ setLoggedIn, setShowLogin }) => {
         email: '',
         password: ''
     })
+    const [loading, setLoading] = useState(false)
 
     const poolData = {
         UserPoolId,
@@ -28,47 +29,60 @@ const Login = ({ setLoggedIn, setShowLogin }) => {
     const handleSubmit = e => {
         e.preventDefault()
 
-        const authenticationDetails = new AuthenticationDetails({
-            Username: form.email,
-            Password: form.password
-        })
+        // validate form is filled out
+        if (form.email === '' || form.password === '') {
+            alert('Please fill in all fields')
+        } else {
+            setLoading(true)
+            // call cognito to log user in
+            const authenticationDetails = new AuthenticationDetails({
+                Username: form.email,
+                Password: form.password
+            })
 
-        const userData = {
-            Username: form.email,
-            Pool: userPool,
-        }
+            const userData = {
+                Username: form.email,
+                Pool: userPool,
+            }
 
-        const cognitoUser = new CognitoUser(userData);
-        cognitoUser.authenticateUser(authenticationDetails, {
-            onSuccess: function (result) {
-                var accessToken = result.getAccessToken().getJwtToken();
+            const cognitoUser = new CognitoUser(userData);
+            cognitoUser.authenticateUser(authenticationDetails, {
+                onSuccess: function (result) {
+                    var accessToken = result.getAccessToken().getJwtToken();
 
-                AWS.config.region = region;
+                    AWS.config.region = region;
 
-                AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-                    IdentityPoolId,
-                    Logins: {
-                        'cognito-idp.us-east-2.amazonaws.com/us-east-2_xi7hLKpHp': result
-                            .getIdToken()
-                            .getJwtToken(),
-                    },
-                });
+                    AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+                        IdentityPoolId,
+                        Logins: {
+                            'cognito-idp.us-east-2.amazonaws.com/us-east-2_xi7hLKpHp': result
+                                .getIdToken()
+                                .getJwtToken(),
+                        },
+                    });
 
-                AWS.config.credentials.refresh(error => {
-                    if (error) {
-                        console.error(error);
+                    AWS.config.credentials.refresh(error => {
+                        if (error) {
+                            console.error(error);
+                        } else {
+                            sessionStorage.setItem('loggedIn', 'true');
+                            setLoggedIn(true)
+                            setShowLogin(false)
+                        }
+                    });
+                    setLoading(false)
+                },
+
+                onFailure: function (err) {
+                    setLoading(false)
+                    if (err.message === 'User is not confirmed.') {
+                        alert('Please click the link in you mailbox to confirm your account')
                     } else {
-                        sessionStorage.setItem('loggedIn', 'true');
-                        setLoggedIn(true)
-                        setShowLogin(false)
+                        alert(err.message || JSON.stringify(err));
                     }
-                });
-            },
-
-            onFailure: function (err) {
-                alert(err.message || JSON.stringify(err));
-            },
-        });
+                },
+            });
+        }
     }
 
     return (
@@ -86,7 +100,7 @@ const Login = ({ setLoggedIn, setShowLogin }) => {
                 type='password'
                 value={form.password} />
             <div className='center-div'>
-                <Button text='Login' type='submit' />
+                <Button text='Login' type='submit' loading={loading} />
                 <Button text='Cancel' onClick={() => setShowLogin(false)} />
             </div>
         </form>

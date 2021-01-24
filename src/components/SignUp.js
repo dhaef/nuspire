@@ -12,6 +12,7 @@ const SignUp = ({ setLoggedIn, setShowSignUp }) => {
         email: '',
         password: ''
     })
+    const [loading, setLoading] = useState(false)
 
     const poolData = {
         UserPoolId,
@@ -24,25 +25,29 @@ const SignUp = ({ setLoggedIn, setShowSignUp }) => {
 
     const handleSubmit = e => {
         e.preventDefault()
-        userPool.signUp(form.email, form.password, [], null, (err, data) => {
-            if (err) {
-                alert(`
-                    Password must contain
-                        -uppercase letter
-                        -lowercase letter
-                        -number
-                        -special character
-                `)
-                return
-            }
-            setLoggedIn(true)
-            setShowSignUp(false)
-            sessionStorage.setItem('loggedIn', 'true')
-            setForm({
-                email: '',
-                password: ''
+
+        // validate form filled out
+        if (form.email === '' || form.password === '') {
+            alert('Please fill in all fields')
+        } else {
+            setLoading(true)
+            // call cognito to sign user up
+            userPool.signUp(form.email, form.password, [], null, (err, data) => {
+                if (err) {
+                    setLoading(false)
+                    alert(err.message)
+                    return
+                }
+                setLoggedIn(true)
+                setShowSignUp(false)
+                sessionStorage.setItem('loggedIn', 'true')
+                setForm({
+                    email: '',
+                    password: ''
+                })
+                setLoading(false)
             })
-        })
+        }
     }
 
     return (
@@ -60,7 +65,7 @@ const SignUp = ({ setLoggedIn, setShowSignUp }) => {
                 type='password'
                 value={form.password} />
             <div className='center-div'>
-                <Button text='Sign Up' type='submit' />
+                <Button text='Sign Up' type='submit' loading={loading} />
                 <Button text='Cancel' onClick={() => setShowSignUp(false)} />
             </div>
         </form>

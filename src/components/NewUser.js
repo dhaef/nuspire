@@ -9,25 +9,33 @@ const NewUser = ({ setUsers, users, setShowAddUser }) => {
         firstName: '',
         stateOfResidence: ''
     })
+    const [loading, setLoading] = useState(false)
 
     const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value })
 
     const handleSubmit = async e => {
         e.preventDefault()
+        setLoading(true)
 
-        // generate new id
-        const id = uuidv4()
+        // validate fields
+        if (form.firstName === '' || form.stateOfResidence === '') {
+            alert('Please fill in all fields')
+        } else {
+            // generate new id
+            const id = uuidv4()
 
-        // send new user to DB
-        await callQuery('create', { id, firstName: form.firstName.toLowerCase(), stateOfResidence: form.stateOfResidence })
-        // add to current state
-        setUsers([...users, { ...form, id }])
-        // reset form fields
-        setForm({
-            firstName: '',
-            stateOfResidence: ''
-        })
-        setShowAddUser(false)
+            // send new user to DB
+            await callQuery('create', { id, firstName: form.firstName.toLowerCase(), stateOfResidence: form.stateOfResidence })
+            // add to current state
+            setUsers([...users, { ...form, id }])
+            // reset form fields
+            setForm({
+                firstName: '',
+                stateOfResidence: ''
+            })
+            setShowAddUser(false)
+        }
+        setLoading(false)
     }
 
     // handles cloasing addUser form by reseting form
@@ -54,7 +62,7 @@ const NewUser = ({ setUsers, users, setShowAddUser }) => {
                 onChange={handleChange}
                 value={form.stateOfResidence} />
             <div className='center-div'>
-                <Button type="submit" text="Add User" />
+                <Button type="submit" text="Add User" loading={loading} />
                 <Button text="Cancel" onClick={handleCancelAddUser} />
             </div>
         </form>
