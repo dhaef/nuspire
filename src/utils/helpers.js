@@ -60,7 +60,7 @@ export const callQuery = async (type, variables) => {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
-                'x-api-key': 'da2-y4mng2ctmjh7xfrezxkgykbpeq'
+                'x-api-key': 'da2-gaiuwdcqhvf5vgolj2rhv4ujvu'
             },
             body: JSON.stringify(queryToCall)
         })

@@ -73,12 +73,12 @@ const Login = ({ setLoggedIn, setShowLogin, loading, setLoading }) => {
                 },
 
                 onFailure: function (err) {
-                    setLoading(false)
                     if (err.message === 'User is not confirmed.') {
                         alert('Please click the link in you mailbox to confirm your account')
                     } else {
                         alert(err.message || JSON.stringify(err));
                     }
+                    setLoading(false)
                 },
             });
         }
